@@ -32,7 +32,7 @@ for my $val (@roundtrip) {
 
 is(
     unpack( 'H*', CBOR::PP::encode( CBOR::PP::tag(0, '2013-03-21T20:04:00Z') ) ),
-    'c074323031332d30332d32315432303a30343a30305a',
+    'c054323031332d30332d32315432303a30343a30305a',
     'encode a tagged string',
 );
 

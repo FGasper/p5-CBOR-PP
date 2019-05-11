@@ -60,13 +60,9 @@ This code is licensed under the same license as Perl itself.
 
 =head1 METHODS
 
-=head2 $value = I<CLASS>->decode( $CBOR )
+=head2 $value = decode( $CBOR_BYTESTRING )
 
 Returns a Perl value that represents the serialized CBOR string.
-
-For now this is only called as a static method but may eventually
-be an instance method as well, for example, to define options like
-tag callbacks.
 
 =cut
 
@@ -95,7 +91,7 @@ use constant {
 sub decode {
     $offset = 0;
 
-    for ($_[1]) {
+    for ($_[0]) {
         $byte1 = ord( substr( $_, $offset, 1 ) );
         $lead3bits = 0xe0 & $byte1;
 
@@ -233,7 +229,7 @@ sub decode {
             my $cur_len;
 
             for my $i ( 0 .. ($len - 1) ) {
-                ($cur_len, $val[$i]) = __PACKAGE__->decode( substr( $_, $total ) );
+                ($cur_len, $val[$i]) = decode( substr( $_, $total ) );
                 $total += $cur_len;
             }
 
@@ -275,10 +271,10 @@ sub decode {
             my $cur_len;
 
             while ( $len > 0 ) {
-                ($cur_len, my $key) = __PACKAGE__->decode( substr( $_, $total ) );
+                ($cur_len, my $key) = decode( substr( $_, $total ) );
                 $total += $cur_len;
 
-                ( $cur_len, $val{$key} ) = __PACKAGE__->decode( substr( $_, $total ) );
+                ( $cur_len, $val{$key} ) = decode( substr( $_, $total ) );
                 $total += $cur_len;
 
                 $len--;
@@ -310,7 +306,7 @@ sub decode {
                 die "Invalid lead byte: $byte1";
             }
 
-            my @ret = __PACKAGE__->decode( substr( $_, $taglen ) );
+            my @ret = decode( substr( $_, $taglen ) );
             return( $taglen + $ret[0], $ret[1] );
         }
 
@@ -366,7 +362,7 @@ sub _stringstream {
             last;
         }
 
-        my ($len, $chunk) = __PACKAGE__->decode( substr( $_, $i ) );
+        my ($len, $chunk) = decode( substr( $_, $i ) );
 
         $full .= $chunk;
         $i += $len;
@@ -390,7 +386,7 @@ sub _arraystream {
             last;
         }
 
-        my ($len, $chunk) = __PACKAGE__->decode( substr( $_, $i ) );
+        my ($len, $chunk) = decode( substr( $_, $i ) );
 
         push @full, $chunk;
         $i += $len;
@@ -412,14 +408,14 @@ sub _hashstream {
             last;
         }
 
-        my ($len, $key) = __PACKAGE__->decode( substr( $_, $i ) );
+        my ($len, $key) = decode( substr( $_, $i ) );
         $i += $len;
 
         if ( "\xff" eq substr( $_, $i, 1 ) ) {
             die "Odd number of elements in map! (Last key: “$key”)";
         }
 
-        ($len, $full{$key}) = __PACKAGE__->decode( substr( $_, $i ) );
+        ($len, $full{$key}) = decode( substr( $_, $i ) );
         $i += $len;
     }
 

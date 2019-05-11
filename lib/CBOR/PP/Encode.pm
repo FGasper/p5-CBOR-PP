@@ -15,7 +15,8 @@ CBOR::PP::Decode
 
 =head1 DESCRIPTION
 
-This implements a basic CBOR encoder in pure Perl.
+This implements a L<CBOR|https://tools.ietf.org/html/rfc7049> encoder
+in pure Perl.
 
 =head1 MAPPING PERL TO CBOR
 
@@ -62,8 +63,6 @@ This code is licensed under the same license as Perl itself.
 
 =cut
 
-=cut
-
 #----------------------------------------------------------------------
 
 use CBOR::PP::X;
@@ -93,7 +92,7 @@ sub tag {
 
 =head1 METHODS
 
-=head2 $cbor = I<CLASS>->encode( $VALUE )
+=head2 $cbor = encode( $VALUE, \%OPTS )
 
 Returns a CBOR string that represents the passed $VALUE.
 
@@ -103,7 +102,7 @@ canonicalization.
 
 =cut
 
-my ($hdr, $numkeys);
+my ($numkeys);
 
 our $_depth = 0;
 
@@ -120,13 +119,14 @@ sub encode {
     local $_depth = $_depth + 1;
     die CBOR::PP::X->create('Recursion', sprintf("Refuse to encode() more than %d times at once!", _MAX_RECURSION())) if $_depth > _MAX_RECURSION();
 
-    for ($_[1]) {
+    for ($_[0]) {
         if (!ref) {
+
             # undef => null
             return "\xf6" if !defined;
 
             # empty string
-            return "\x40" if !length;
+            return utf8::is_utf8($_) ? "\x60" : "\x40" if !length;
 
             # unsigned int
             if (!$_ || (!tr<0-9><>c && 0 != rindex($_, 0, 0))) {
@@ -154,7 +154,7 @@ sub encode {
             #        return pack( 'C Q>', 0x3b, -$_ );
             #    }
 
-            if (utf8::is_utf8($_) || !tr<\x80-\xff><>) {
+            if (utf8::is_utf8($_)) {
 
                 # Perl doesn’t seem to have a way to pack() a
                 # a UTF-8 string directly to bytes???
@@ -201,7 +201,7 @@ sub encode {
                 $hdr = pack( 'C Q>', 0x9b, 0 + @$_ );
             }
 
-            return join( q<>, $hdr, map { __PACKAGE__->encode($_) } @$_ );
+            return join( q<>, $hdr, map { encode($_, $_[1]) } @$_ );
         }
         elsif (ref eq 'HASH') {
             my $hdr;
@@ -224,18 +224,26 @@ sub encode {
                 $hdr = pack( 'C Q>', 0xbb, $numkeys );
             }
 
-            return join( q<>, $hdr, map { __PACKAGE__->encode($_) } %$_ );
+            if ($_[1] && $_[1]->{'canonical'}) {
+                my $hr = $_;
+
+                my @keys = sort { (length($a) <=> length($b)) || ($a cmp $b) } keys %$_;
+                return join( q<>, $hdr, map { encode($_), encode($hr->{$_}, $_[1]) } @keys );
+            }
+            else {
+                return join( q<>, $hdr, map { encode($_, $_[1]) } %$_ );
+            }
         }
         elsif (ref()->isa('JSON::PP::Boolean')) {
             return $_ ? "\xf5" : "\xf4";
         }
         elsif (ref()->isa('CBOR::PP::Tagged')) {
-            my $numstr = __PACKAGE__->encode( $_->[0] );
+            my $numstr = encode( $_->[0] );
 
             substr($numstr, 0, 1) &= "\x1f";     # zero out the first three bits
             substr($numstr, 0, 1) |= "\xc0";     # now assign the first three
 
-            return( $numstr . __PACKAGE__->encode( $_->[1] ) );
+            return( $numstr . encode( $_->[1], $_[1] ) );
         }
 
         die "Can’t encode “$_” as CBOR!";

@@ -14,25 +14,44 @@ CBOR::PP - CBOR in pure Perl
     my $value = CBOR::PP::decode( $cbor );
 
     my $tagged = CBOR::PP::tag( 123, 'value' );
+
     my $cbor = CBOR::PP::encode( [ 'some', { data => $tagged } ] );
+
+    # canonical encoding
+    $cbor = CBOR::PP::encode(
+        { aa => 'last', a => 'first', z => 'middle' },
+        { canonical => 1 },
+    );
 
 =head1 DESCRIPTION
 
-This module is a syntactic convenience. For details about what CBOR::PP
-can and can’t do, see the underlying L<CBOR::PP::Encode> and
+This library implements a L<CBOR|https://tools.ietf.org/html/rfc7049>
+encoder and decoder in pure Perl.
+
+This module itself is a syntactic convenience. For details about what
+CBOR::PP can and can’t do, see the underlying L<CBOR::PP::Encode> and
 L<CBOR::PP::Decode> modules.
 
 =head1 STATUS
 
-This distribution is an experimental effort. Unless XS or licensing
-is a problem for you, you probably should use L<CBOR::XS>.
+This distribution is an experimental effort.
 
 That having been said, CBOR is a simple enough encoding that I
 suspect—I hope!—that bugs here will be few and far between.
 
+Note that, because L<CBOR::Free> is so much faster,
+there probably won’t be much further effort put into this pure-Perl code.
+
 Note that this distribution’s interface can still change. If you decide
 to use CBOR::PP in your project, please always check the changelog before
 upgrading.
+
+=head1 SEE ALSO
+
+L<CBOR::Free> is a B<much> faster, XS-based encoder/decoder.
+
+L<CBOR::XS> isn’t quite as fast as CBOR::Free but is older and
+(as of this writing) more widely used.
 
 =head1 AUTHOR
 
@@ -46,12 +65,14 @@ This code is licensed under the same license as Perl itself.
 
 #----------------------------------------------------------------------
 
+our $VERSION = '0.01_01';
+
 use CBOR::PP::Encode ();
 use CBOR::PP::Decode ();
 
-sub encode { CBOR::PP::Encode->encode($_[0]) }
+*encode = *CBOR::PP::Encode::encode;
 
-sub decode { scalar CBOR::PP::Decode->decode($_[0]) }
+*decode = *CBOR::PP::Decode::decode;
 
 *tag = *CBOR::PP::Encode::tag;
 

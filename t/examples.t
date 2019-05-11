@@ -71,7 +71,15 @@ for my $t (@examples) {
     );
 }
 
-diag '----------';
+# NB: Different perls have historically represented these values
+# using different strings:
+#   - Modern perls all appear to use: inf nan -inf
+#   - Some older perls used Inf NaN -Inf
+#   - Others (e.g., Strawberry 5.12.2) used 1.#INF 1.#QNAN -1.#INF
+#   - Still others (Solaris) used Infinity NaN -Infinity
+my $inf = unpack("f>", "\x7f\x80\x00\x00");
+my $nan = unpack("f>", "\x7f\xc0\x00\x00");
+my $neginf = unpack("f>", "\xff\x80\x00\x00");
 
 my @decode = (
     [ -1 => '20' ],
@@ -82,14 +90,14 @@ my @decode = (
     [ 1.5 => 'f93e00' ],
     [ 100000 => 'fa47c35000' ],
     ( $is_64bit ? [ -4.1 => 'fbc010666666666666' ] : () ),
-    [ 'Inf' => 'fa7f800000' ],
-    [ 'NaN' => 'fa7fc00000' ],
-    [ '-Inf' => 'faff800000' ],
+    [ $inf => 'fa7f800000' ],
+    [ $nan => 'fa7fc00000' ],
+    [ $neginf => 'faff800000' ],
     ($is_64bit ?
         (
-            [ 'Inf' => 'fb7ff0000000000000' ],
-            [ 'NaN' => 'fb7ff8000000000000' ],
-            [ '-Inf' => 'fbfff0000000000000' ],
+            [ $inf => 'fb7ff0000000000000' ],
+            [ $nan => 'fb7ff8000000000000' ],
+            [ $neginf => 'fbfff0000000000000' ],
         ) : ()
     ),
     [ '2013-03-21T20:04:00Z' => 'c074323031332d30332d32315432303a30343a30305a' ],

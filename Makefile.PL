@@ -17,7 +17,7 @@ WriteMakefile1(
         },
     },
 
-    NAME         => 'Protocol::DBus',
+    NAME         => 'CBOR::PP',
     AUTHOR       => 'Felipe Gasper (FELIPE)',
     VERSION_FROM => 'lib/CBOR/PP.pm',         # finds \$VERSION
     ABSTRACT_FROM => 'lib/CBOR/PP.pm',

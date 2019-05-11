@@ -44,7 +44,9 @@ upgrading.
 [CBOR::Free](https://metacpan.org/pod/CBOR::Free) is a **much** faster, XS-based encoder/decoder.
 
 [CBOR::XS](https://metacpan.org/pod/CBOR::XS) isn’t quite as fast as CBOR::Free but is older and
-(as of this writing) more widely used.
+(as of this writing) more widely used. It’s also technically unsupported
+on current Perl versions, and its GPL license renders it effectively
+useless for closed-source projects.
 
 # AUTHOR
 

@@ -12,7 +12,8 @@ lib/CBOR/PP/X.pm
 lib/CBOR/PP/X/Base.pm
 lib/CBOR/PP/X/Recursion.pm
 t/against_cbor_xs.t
-t/examples.pl
-t/general.pl
+t/examples.t
+t/general.t
 t/half_float.t
+t/hash.t
 t/utf8.pl

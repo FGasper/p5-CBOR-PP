@@ -52,8 +52,8 @@ L<CBOR::Free> is a B<much> faster, XS-based encoder/decoder.
 
 L<CBOR::XS> isn’t quite as fast as CBOR::Free but is older and
 (as of this writing) more widely used. It’s also technically unsupported
-on current Perl versions, and its GPL license renders it effectively
-useless for closed-source projects.
+on current Perl versions, though, and its GPL license makes it
+useful only for open-source projects.
 
 =head1 AUTHOR
 

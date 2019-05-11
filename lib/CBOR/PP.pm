@@ -76,7 +76,7 @@ This code is licensed under the same license as Perl itself.
 
 #----------------------------------------------------------------------
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use CBOR::PP::Encode ();
 use CBOR::PP::Decode ();

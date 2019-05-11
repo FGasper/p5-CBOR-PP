@@ -39,6 +39,15 @@ Note that this distribution’s interface can still change. If you decide
 to use CBOR::PP in your project, please always check the changelog before
 upgrading.
 
+# FRACTIONAL (FLOATING-POINT) NUMBERS
+
+Floating-point numbers are encoded in CBOR as IEEE 754 half-, single-,
+or double-precision. If your Perl is compiled to use “long double”
+floating-point numbers, you may see rounding errors when converting
+to/from CBOR. If that’s a problem for you, append an empty string to
+your floating-point numbers, which will cause CBOR::PP to encode
+them as strings.
+
 # SEE ALSO
 
 [CBOR::Free](https://metacpan.org/pod/CBOR::Free) is a **much** faster, XS-based encoder/decoder.

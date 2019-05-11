@@ -1,4 +1,7 @@
 Revision history for Perl module CBOR::PP
 
+0.02 Sat 11 May 2019
+- Fix tests with long-double perls. (No production changes.)
+
 0.01 Fri 10 May 2019
 - Initial release

@@ -5,6 +5,8 @@
 use strict;
 use warnings;
 
+use Config;
+
 use Test::More;
 
 use Types::Serialiser ();
@@ -12,6 +14,8 @@ use Types::Serialiser ();
 use CBOR::PP;
 
 my $is_64bit = eval { pack 'q' };
+
+my $long_double_yn = $Config::Config{'uselongdouble'};
 
 my @examples = (
     [ 0 => '00' ],
@@ -86,20 +90,32 @@ my @decode = (
     [ -10 => '29' ],
     [ -100 => '3863' ],
     [ -1000 => '3903e7' ],
-    [ 1.1 => 'fb3ff199999999999a' ],
+
+    # These appear to decode with no rounding errors
+    # on long-double Perls:
     [ 1.5 => 'f93e00' ],
     [ 100000 => 'fa47c35000' ],
-    ( $is_64bit ? [ -4.1 => 'fbc010666666666666' ] : () ),
-    [ $inf => 'fa7f800000' ],
-    [ $nan => 'fa7fc00000' ],
-    [ $neginf => 'faff800000' ],
-    ($is_64bit ?
-        (
+);
+
+if (!$long_double_yn) {
+    push @decode, (
+        [ 1.1 => 'fb3ff199999999999a' ],
+        [ $inf => 'fa7f800000' ],
+        [ $nan => 'fa7fc00000' ],
+        [ $neginf => 'faff800000' ],
+    );
+
+    if ($is_64bit) {
+        push @decode, (
+           [ -4.1 => 'fbc010666666666666' ],
             [ $inf => 'fb7ff0000000000000' ],
             [ $nan => 'fb7ff8000000000000' ],
             [ $neginf => 'fbfff0000000000000' ],
-        ) : ()
-    ),
+        );
+    }
+}
+
+push @decode, (
     [ '2013-03-21T20:04:00Z' => 'c074323031332d30332d32315432303a30343a30305a' ],
     [ 1363896240 => 'c11a514b67b0' ],
     [ 1363896240.5 => 'c1fb41d452d9ec200000' ],
@@ -128,6 +144,7 @@ my @decode = (
     [ ['a', { b => 'c' }] => '826161bf61626163ff' ],
     [ { Fun => Types::Serialiser::true(), Amt => -2 } => 'bf6346756ef563416d7421ff' ],
 );
+
 
 for my $t (@decode) {
     my $decoded = CBOR::PP::decode( pack( 'H*', $t->[1] ) );

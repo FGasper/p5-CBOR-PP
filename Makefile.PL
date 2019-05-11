@@ -29,6 +29,7 @@ WriteMakefile1(
     PREREQ_PM    => {
         'parent'    => 0,
         'X::Tiny'   => 0,
+        'Types::Serialiser' => 0,
     },
 
     TEST_REQUIRES => {

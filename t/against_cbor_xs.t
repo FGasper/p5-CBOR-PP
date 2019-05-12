@@ -6,6 +6,8 @@ use CBOR::PP;
 
 my $is_64bit = eval { pack 'Q' };
 
+my $is_long_double = $Config::Config{'uselongdouble'};
+
 SKIP: {
     skip "CBOR::XS didn’t load: $@" if !eval { require CBOR::XS; 1 };
     skip "Types::Serialiser didn’t load: $@" if !eval { require Types::Serialiser; 1 };
@@ -14,7 +16,10 @@ SKIP: {
         q<>,
         0,
         1,
-        1.1,
+
+        # Not all long-double Perls break here, but some do.
+        ( $is_long_double ? () : 1.1 ),
+
         -1,
         -24,
         -25,

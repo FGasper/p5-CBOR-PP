@@ -1,5 +1,4 @@
 .appveyor.yml
-.travis.yml
 Changes
 LICENSE
 MANIFEST
@@ -14,6 +13,7 @@ lib/CBOR/PP/X/Base.pm
 lib/CBOR/PP/X/Recursion.pm
 t/against_cbor_xs.t
 t/examples.t
+t/float.t
 t/general.t
 t/half_float.t
 t/hash.t

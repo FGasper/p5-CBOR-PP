@@ -22,8 +22,8 @@ This library implements a [CBOR](https://tools.ietf.org/html/rfc7049)
 encoder and decoder in pure Perl.
 
 This module itself is a syntactic convenience. For details about what
-CBOR::PP can and can’t do, see the underlying [CBOR::PP::Encode](https://metacpan.org/pod/CBOR::PP::Encode) and
-[CBOR::PP::Decode](https://metacpan.org/pod/CBOR::PP::Decode) modules.
+CBOR::PP can and can’t do, see the underlying [CBOR::PP::Encode](https://metacpan.org/pod/CBOR%3A%3APP%3A%3AEncode) and
+[CBOR::PP::Decode](https://metacpan.org/pod/CBOR%3A%3APP%3A%3ADecode) modules.
 
 # STATUS
 
@@ -32,7 +32,7 @@ This distribution is an experimental effort.
 That having been said, CBOR is a simple enough encoding that I
 suspect—I hope!—that bugs here will be few and far between.
 
-Note that, because [CBOR::Free](https://metacpan.org/pod/CBOR::Free) is so much faster,
+Note that, because [CBOR::Free](https://metacpan.org/pod/CBOR%3A%3AFree) is so much faster,
 there probably won’t be much further effort put into this pure-Perl code.
 
 Note that this distribution’s interface can still change. If you decide
@@ -50,9 +50,9 @@ them as strings.
 
 # SEE ALSO
 
-[CBOR::Free](https://metacpan.org/pod/CBOR::Free) is a **much** faster, XS-based encoder/decoder.
+[CBOR::Free](https://metacpan.org/pod/CBOR%3A%3AFree) is a **much** faster, XS-based encoder/decoder.
 
-[CBOR::XS](https://metacpan.org/pod/CBOR::XS) isn’t quite as fast as CBOR::Free but is older and
+[CBOR::XS](https://metacpan.org/pod/CBOR%3A%3AXS) isn’t quite as fast as CBOR::Free but is older and
 (as of this writing) more widely used. It’s also technically unsupported
 on current Perl versions, though, and its GPL license makes it
 useful only for open-source projects.

@@ -195,7 +195,7 @@ sub decode {
 
             # A no-op if $v is already UTF8-flagged, but if it’s not,
             # then this will apply the flag. We thus preserve the ability
-            # to round-trip a character string through Perl.
+            # to round-trip a UTF8-flagged string through Perl.
             utf8::upgrade($v);
 
             return ($hdrlen + $len, $v);

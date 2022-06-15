@@ -37,7 +37,6 @@ jobs:
           - '5.14'
           - '5.12'
           - '5.10'
-          - '5.8'
 
     container:
       image: perldocker/perl-tester:${{ matrix.perl-version }}
@@ -82,7 +81,7 @@ jobs:
       - run: perl -V
       - run: apt update
       - run: apt install -y curl
-      - run: cpanm --notest --installdeps .
+      - run: curl -L https://cpanmin.us | perl - --notest --installdeps .
       - run: perl Makefile.PL
       - run: make
       - run: prove -wlvmb t

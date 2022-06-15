@@ -314,8 +314,8 @@ sub decode {
                 die "Invalid lead byte: $byte1";
             }
 
-            my @ret = decode( substr( $_, $taglen ) );
-            return( $taglen + $ret[0], $ret[1] );
+            my ($offset_len, $value) = decode( substr( $_, $taglen ) );
+            return( $taglen + $offset_len, $value );
         }
 
         # floats, true, false, null, undefined

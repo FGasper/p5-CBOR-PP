@@ -347,7 +347,7 @@ sub decode {
                 return ( 5, unpack( 'x f>', $_ ) );
             }
             elsif ($byte1 == 0xfb) {
-                return ( 5, unpack( 'x d>', $_ ) );
+                return ( 9, unpack( 'x d>', $_ ) );
             }
 
             die sprintf('can’t decode special value: %v.02x', $_);
